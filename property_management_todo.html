@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, ini([docs.github.com](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site?utm_source=chatgpt.com))ment To-Do List</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --line: #d9e1ec;
+      --text: #203040;
+      --muted: #6b7b8c;
+      --primary: #1f6feb;
+      --low: #eef6ff;
+      --medium: #fff7e8;
+      --high: #fff1f1;
+      --done: #dff7e6;
+      --done-border: #65b67a;
+      --danger: #c0392b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .status-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      min-width: 280px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    }
+
+    .status-box strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .panel {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .secondary-btn {
+      background: #e9eef7;
+      color: var(--text);
+    }
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .task-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .task-item {
+      border: 1px solid var(--line);
+      border-left: 6px solid #b7c2d0;
+      border-radius: 14px;
+      padding: 14px;
+      background: white;
+    }
+
+    .task-item.low { background: var(--low); border-left-color: #63a1ff; }
+    .task-item.medium { background: var(--medium); border-left-color: #f2b94b; }
+    .task-item.high { background: var(--high); border-left-color: #e26d6d; }
+    .task-item.done {
+      background: var(--done);
+      border: 1px solid var(--done-border);
+      border-left: 6px solid var(--done-border);
+    }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .task-title-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .task-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(0,0,0,0.08);
+    }
+
+    .done-badge {
+      background: #2e8b57;
+      color: white;
+    }
+
+    .task-body {
+      margin-top: 8px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .task-meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .danger-btn {
+      background: #fdeeee;
+      color: var(--danger);
+    }
+
+    .empty-state {
+      padding: 30px 14px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      background: #fbfcfe;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .panel { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div>
+        <h1>Property Management To-Do List</h1>
+        <p class="subtitle">
+          Shared to-do tracking for all 10 sites. Add tasks, set priority from low to high,
+          tick done to turn green, and record the latest edited date and time.
+        </p>
+      </div>
+      <div class="status-box">
+        <strong>Sync status</strong>
+        <div id="syncStatus">Waiting for Firebase setup.</div>
+        <div class="small-note" id="lastGlobalUpdate">No changes yet.</div>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="panel">
+      <div class="card">
+        <h2>Add New Task</h2>
+        <div class="form-grid">
+          <div>
+            <label for="taskTitle">Task title</label>
+            <input id="taskTitle" type="text" placeholder="Example: Follow up with contractor" />
+          </div>
+          <div>
+            <label for="taskDetails">Task details</label>
+            <textarea id="taskDetails" placeholder="Write the task details here"></textarea>
+          </div>
+          <div>
+            <label for="taskPriority">Priority</label>
+            <select id="taskPriority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div>
+            <label for="taskPerson">Person in charge</label>
+            <input id="taskPerson" type="text" placeholder="Example: MO Team / Admin / Building Manager" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="primary-btn" id="addTaskBtn">Add Task</button>
+          <button class="secondary-btn" id="clearFormBtn">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="site-header">
+          <div>
+            <h2 id="siteTitle">Site</h2>
+            <div class="small-note" id="siteStats">0 task(s)</div>
+          </div>
+          <div class="filters">
+            <label for="filterStatus" style="margin:0;">Status</label>
+            <select id="filterStatus">
+              <option value="all">All</option>
+              <option value="open">Open</option>
+              <option value="done">Done</option>
+            </select>
+            <label for="filterPriority" style="margin:0;">Priority</label>
+            <select id="filterPriority">
+              <option value="all">All</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="small-note" id="lastEditedInfo">Last edited: -</div>
+        <div class="task-list" id="taskList"></div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <strong>Important:</strong> for live shared updates across multiple users, you need Firebase configured.
+      Replace the Firebase configuration below with your own project details. Without Firebase, the page will not sync online.
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js';
+    import {
+      getDatabase,
+      ref,
+      onValue,
+      push,
+      update,
+      remove,
+      get
+    } from 'https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js';
+
+    const sites = [
+      'Aria Residence',
+      'Skyluxe',
+      'KM1east',
+      'Tuai Barat',
+      'Tuai Timur',
+      'Mutiara Residence',
+      '231TR',
+      'Epic residence',
+      'Altris Residence'
+    ];
+
+    // Add your own Firebase config here.
+    // Get this from Firebase Console > Project settings > Your apps > SDK setup and configuration.
+    const firebaseConfig = {
+      apiKey: 'PASTE_YOUR_API_KEY',
+      authDomain: 'PASTE_YOUR_AUTH_DOMAIN',
+      databaseURL: 'PASTE_YOUR_DATABASE_URL',
+      projectId: 'PASTE_YOUR_PROJECT_ID',
+      storageBucket: 'PASTE_YOUR_STORAGE_BUCKET',
+      messagingSenderId: 'PASTE_YOUR_MESSAGING_SENDER_ID',
+      appId: 'PASTE_YOUR_APP_ID'
+    };
+
+    const hasFirebaseConfig = !Object.values(firebaseConfig).some(value => String(value).startsWith('PASTE_YOUR_'));
+
+    const tabsEl = document.getElementById('tabs');
+    const siteTitleEl = document.getElementById('siteTitle');
+    const siteStatsEl = document.getElementById('siteStats');
+    const taskListEl = document.getElementById('taskList');
+    const syncStatusEl = document.getElementById('syncStatus');
+    const lastGlobalUpdateEl = document.getElementById('lastGlobalUpdate');
+    const lastEditedInfoEl = document.getElementById('lastEditedInfo');
+    const filterStatusEl = document.getElementById('filterStatus');
+    const filterPriorityEl = document.getElementById('filterPriority');
+
+    const taskTitleEl = document.getElementById('taskTitle');
+    const taskDetailsEl = document.getElementById('taskDetails');
+    const taskPriorityEl = document.getElementById('taskPriority');
+    const taskPersonEl = document.getElementById('taskPerson');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const clearFormBtn = document.getElementById('clearFormBtn');
+
+    let activeSite = sites[0];
+    let allData = {};
+    let db = null;
+
+    function formatDateTime(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      return date.toLocaleString();
+    }
+
+    function siteKey(siteName) {
+      return siteName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    }
+
+    function renderTabs() {
+      tabsEl.innerHTML = '';
+      sites.forEach(site => {
+        const button = document.createElement('button');
+        button.className = `tab ${site === activeSite ? 'active' : ''}`;
+        button.textContent = site;
+        button.addEventListener('click', () => {
+          activeSite = site;
+          renderTabs();
+          renderTasks();
+        });
+        tabsEl.appendChild(button);
+      });
+    }
+
+    function getTasksForActiveSite() {
+      const key = siteKey(activeSite);
+      const siteData = allData[key] || {};
+      const tasksObject = siteData.tasks || {};
+      const tasks = Object.entries(tasksObject).map(([id, value]) => ({ id, ...value }));
+
+      const statusFilter = filterStatusEl.value;
+      const priorityFilter = filterPriorityEl.value;
+
+      return tasks
+        .filter(task => {
+          if (statusFilter === 'open' && task.done) return false;
+          if (statusFilter === 'done' && !task.done) return false;
+          if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          const weight = { high: 1, medium: 2, low: 3 };
+          if ((a.done ? 1 : 0) !== (b.done ? 1 : 0)) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+          if (weight[a.priority] !== weight[b.priority]) return weight[a.priority] - weight[b.priority];
+          return (b.updatedAt || 0) - (a.updatedAt || 0);
+        });
+    }
+
+    function renderTasks() {
+      const key = siteKey(activeSite);
+      const siteData = allData[key] || {};
+      const tasks = getTasksForActiveSite();
+      const allTasksRaw = Object.values((siteData.tasks || {}));
+      const doneCount = allTasksRaw.filter(task => task.done).length;
+
+      siteTitleEl.textContent = activeSite;
+      siteStatsEl.textContent = `${allTasksRaw.length} task(s) | ${doneCount} done`;
+      lastEditedInfoEl.textContent = `Last edited: ${formatDateTime(siteData.lastEditedAt)}`;
+
+      taskListEl.innerHTML = '';
+      if (!tasks.length) {
+        taskListEl.innerHTML = '<div class="empty-state">No task found for this filter yet.</div>';
+        return;
+      }
+
+      tasks.forEach(task => {
+        const item = document.createElement('div');
+        item.className = `task-item ${task.done ? 'done' : task.priority}`;
+
+        item.innerHTML = `
+          <div class="task-top">
+            <div>
+              <div class="task-title-row">
+                <div class="task-title">${escapeHtml(task.title || '')}</div>
+                <span class="badge">${capitalize(task.priority)}</span>
+                ${task.done ? '<span class="badge done-badge">Done</span>' : ''}
+              </div>
+            </div>
+          </div>
+          <div class="task-body">${escapeHtml(task.details || '-')}</div>
+          <div class="task-meta">
+            <div><strong>Person in charge:</strong> ${escapeHtml(task.person || '-')}</div>
+            <div><strong>Created:</strong> ${formatDateTime(task.createdAt)}</div>
+            <div><strong>Updated:</strong> ${formatDateTime(task.updatedAt)}</div>
+            <div><strong>Last updated by site sheet:</strong> ${activeSite}</div>
+          </div>
+          <div class="task-actions">
+            <button class="primary-btn toggle-btn">${task.done ? 'Mark as Open' : 'Tick Done'}</button>
+            <button class="secondary-btn edit-btn">Edit</button>
+            <button class="danger-btn delete-btn">Delete</button>
+          </div>
+        `;
+
+        item.querySelector('.toggle-btn').addEventListener('click', () => toggleDone(task.id, !task.done));
+        item.querySelector('.edit-btn').addEventListener('click', () => editTask(task));
+        item.querySelector('.delete-btn').addEventListener('click', () => deleteTask(task.id));
+
+        taskListEl.appendChild(item);
+      });
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function capitalize(text) {
+      return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+    }
+
+    async function addTask() {
+      const title = taskTitleEl.value.trim();
+      const details = taskDetailsEl.value.trim();
+      const priority = taskPriorityEl.value;
+      const person = taskPersonEl.value.trim();
+
+      if (!title) {
+        alert('Please enter a task title.');
+        return;
+      }
+
+      if (!db) {
+        alert('Please finish Firebase setup first.');
+        return;
+      }
+
+      const now = Date.now();
+      const key = siteKey(activeSite);
+      const tasksRef = ref(db, `propertyTodo/${key}/tasks`);
+      const newTaskRef = push(tasksRef);
+
+      await update(ref(db), {
+        [`propertyTodo/${key}/tasks/${newTaskRef.key}`]: {
+          title,
+          details,
+          priority,
+          person,
+          done: false,
+          createdAt: now,
+          updatedAt: now
+        },
+        [`propertyTodo/${key}/lastEditedAt`]: now,
+        [`propertyTodo/${key}/lastEditedSiteName`]: activeSite,
+        [`propertyTodo/_meta/lastGlobalUpdateAt`]: now,
+        [`propertyTodo/_meta/lastGlobalSite`]: activeSite
+      });
+
+      clearForm();
+    }
+
+    async function toggleDone(taskId, doneValue) {
+      if (!db) return;
+      const now = Date.now();
+      const key = siteKey(activeSite);
+      await update(ref(db), {
+        [`propertyTodo/${key}/tasks/${taskId}/done`]: doneValue,
+        [`propertyTodo/${key}/tasks/${taskId}/updatedAt`]: now,
+        [`propertyTodo/${key}/lastEditedAt`]: now,
+        [`propertyTodo/${key}/lastEditedSiteName`]: activeSite,
+        [`propertyTodo/_meta/lastGlobalUpdateAt`]: now,
+        [`propertyTodo/_meta/lastGlobalSite`]: activeSite
+      });
+    }
+
+    async function deleteTask(taskId) {
+      if (!db) return;
+      const confirmed = confirm('Delete this task?');
+      if (!confirmed) return;
+      const now = Date.now();
+      const key = siteKey(activeSite);
+      await remove(ref(db, `propertyTodo/${key}/tasks/${taskId}`));
+      await update(ref(db), {
+        [`propertyTodo/${key}/lastEditedAt`]: now,
+        [`propertyTodo/${key}/lastEditedSiteName`]: activeSite,
+        [`propertyTodo/_meta/lastGlobalUpdateAt`]: now,
+        [`propertyTodo/_meta/lastGlobalSite`]: activeSite
+      });
+    }
+
+    async function editTask(task) {
+      const newTitle = prompt('Edit task title:', task.title || '');
+      if (newTitle === null) return;
+      const newDetails = prompt('Edit task details:', task.details || '');
+      if (newDetails === null) return;
+      const newPerson = prompt('Edit person in charge:', task.person || '');
+      if (newPerson === null) return;
+      const newPriority = prompt('Edit priority (low / medium / high):', task.priority || 'low');
+      if (newPriority === null) return;
+
+      const normalizedPriority = String(newPriority).trim().toLowerCase();
+      if (!['low', 'medium', 'high'].includes(normalizedPriority)) {
+        alert('Priority must be low, medium, or high.');
+        return;
+      }
+
+      const now = Date.now();
+      const key = siteKey(activeSite);
+      await update(ref(db), {
+        [`propertyTodo/${key}/tasks/${task.id}/title`]: newTitle.trim(),
+        [`propertyTodo/${key}/tasks/${task.id}/details`]: newDetails.trim(),
+        [`propertyTodo/${key}/tasks/${task.id}/person`]: newPerson.trim(),
+        [`propertyTodo/${key}/tasks/${task.id}/priority`]: normalizedPriority,
+        [`propertyTodo/${key}/tasks/${task.id}/updatedAt`]: now,
+        [`propertyTodo/${key}/lastEditedAt`]: now,
+        [`propertyTodo/${key}/lastEditedSiteName`]: activeSite,
+        [`propertyTodo/_meta/lastGlobalUpdateAt`]: now,
+        [`propertyTodo/_meta/lastGlobalSite`]: activeSite
+      });
+    }
+
+    function clearForm() {
+      taskTitleEl.value = '';
+      taskDetailsEl.value = '';
+      taskPriorityEl.value = 'low';
+      taskPersonEl.value = '';
+    }
+
+    function initFirebase() {
+      if (!hasFirebaseConfig) {
+        syncStatusEl.textContent = 'Firebase not configured yet. Paste your Firebase config first.';
+        renderTabs();
+        renderTasks();
+        return;
+      }
+
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      syncStatusEl.textContent = 'Connected. Live updates are on.';
+
+      const rootRef = ref(db, 'propertyTodo');
+      onValue(rootRef, async snapshot => {
+        allData = snapshot.val() || {};
+        const meta = allData._meta || {};
+        if (meta.lastGlobalUpdateAt) {
+          lastGlobalUpdateEl.textContent = `Latest update: ${formatDateTime(meta.lastGlobalUpdateAt)} | Site: ${meta.lastGlobalSite || '-'}`;
+        } else {
+          lastGlobalUpdateEl.textContent = 'No changes yet.';
+        }
+        renderTasks();
+      });
+
+      ensureSitesExist();
+    }
+
+    async function ensureSitesExist() {
+      if (!db) return;
+      const updates = {};
+      const snapshot = await get(ref(db, 'propertyTodo'));
+      const existing = snapshot.val() || {};
+
+      sites.forEach(site => {
+        const key = siteKey(site);
+        if (!existing[key]) {
+          updates[`propertyTodo/${key}`] = {
+            siteName: site,
+            lastEditedAt: null,
+            tasks: {}
+          };
+        }
+      });
+
+      if (Object.keys(updates).length) {
+        await update(ref(db), updates);
+      }
+    }
+
+    addTaskBtn.addEventListener('click', addTask);
+    clearFormBtn.addEventListener('click', clearForm);
+    filterStatusEl.addEventListener('change', renderTasks);
+    filterPriorityEl.addEventListener('change', renderTasks);
+
+    renderTabs();
+    renderTasks();
+    initFirebase();
+  </script>
+</body>
+</html>
